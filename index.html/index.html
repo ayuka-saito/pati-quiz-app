@@ -97,11 +97,27 @@ body{
 }
 
 /* animation */
-@keyframes pop{
-  0%{ transform:scale(1); }
-  50%{ transform:scale(1.05); }
-  100%{ transform:scale(1); }
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
+
+.button-enter {
+  animation: popIn 0.4s ease forwards;
+  animation-delay: 1s;
+  opacity: 0;
+}
+
 
 /* feedback */
 #feedback{
@@ -231,6 +247,58 @@ body.rainbow {
   animation: rainbowFlash 1s linear infinite;
 }
 
+#titleScreen{
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 400px;
+}
+
+/* activeの時だけ表示＋flex */
+#titleScreen.active{
+  display: flex;
+}
+
+.title-enter {
+  animation: titleEnter 0.8s ease-out forwards;
+}
+
+@keyframes titleEnter {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.subtitle-enter {
+  animation: fadeIn 0.6s ease forwards;
+  animation-delay: 0.6s;
+  opacity: 0;
+}
+
+.button-enter {
+  animation: popIn 0.4s ease forwards;
+  animation-delay: 1s;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 </style>
 </head>
 
@@ -238,15 +306,17 @@ body.rainbow {
 <div id="app">
   <audio id="seCorrect" src="correct.mp3"></audio>
   <audio id="seWrong" src="wrong.mp3"></audio>
-  <audio id="sePerfect" src="se/perfect.mp3"></audio>
-  <audio id="seGood" src="se/good.mp3"></audio>
-  <audio id="seBad" src="se/bad.mp3"></audio>
-  <audio id="seHell" src="se/hell.mp3"></audio>
+  <audio id="sePerfect" src="perfect.mp3"></audio>
+  <audio id="seGood" src="good.mp3"></audio>
+  <audio id="seBad" src="bad.mp3"></audio>
+  <audio id="seHell" src="hell.mp3"></audio>
+  <audio id="seStart" src="start.mp3"></audio>
+  <audio id="seSelect" src="select.mp3"></audio>
 
     <div id="titleScreen" class="screen active">
-  <h1 class="game-title">🎰 スロッタークイズ 🎰</h1>
-  <p class="subtitle">知識とヒキで頂点を掴め</p>
-  <button class="action" onclick="goToGenre()">スタート</button>
+  <h1 class="game-title title-enter">🎰パチスロクイズ🎰</h1>
+  <p class="subtitle subtitle-enter">知識とヒキで頂点を掴め❕</p>
+  <button class="action button-enter" onclick="goToGenre()">スタート</button>
 </div>
 
   <!-- genre -->
@@ -469,12 +539,29 @@ const resultText=document.getElementById("resultText");
 
 /* ===== util ===== */
 function goToGenre(){
-  show(genreScreen);
+  // SE（あとで専用スタート音に変えてもOK）
+  playSE("seStart");
+
+  // 振動（Androidのみ）
+  if(navigator.vibrate){
+    navigator.vibrate(60);
+  }
+
+  // フラッシュ演出
+  document.body.classList.add("flash");
+
+  // 演出後に画面切り替え
+  setTimeout(()=>{
+    document.body.classList.remove("flash");
+    show(genreScreen);
+  }, 300);
 }
+
 function show(screen){
   screens.forEach(s=>s.classList.remove("active"));
   screen.classList.add("active");
 }
+
 function normalize(str){
   return str.trim().toLowerCase();
 }
@@ -515,6 +602,8 @@ function vibrateResult(){
 
 /* ===== start ===== */
 function startQuiz(type){
+  playSE("seSelect");
+
   currentGenre = type;
   quiz = shuffle([...QUIZ_DATA[type]]); // ←ここでランダム化
   index = 0;
@@ -663,15 +752,11 @@ submitBtn.onclick=()=>{
 
 /* ===== next ===== */
 nextBtn.onclick = ()=>{
-  playSE("seBad"); // ← 強制テスト
-  index++;
+  const isLast = index === quiz.length - 1;
 
-  if(index >= quiz.length){
-
-    // ★ ここが最重要（遅延なし）
+  if(isLast){
     if(score === quiz.length){
       playSE("sePerfect");
-      rainbowEffect();
     }else if(score >= 18){
       playSE("seGood");
     }else if(score >= 6){
@@ -679,17 +764,18 @@ nextBtn.onclick = ()=>{
     }else{
       playSE("seHell");
     }
+  }
 
+  index++;
+
+  if(index >= quiz.length){
     vibrateResult();
-
-    setTimeout(()=>{
-      showResult();
-    }, 300);
-
+    showResult();
   }else{
     loadQuestion();
   }
 };
+
 
 
 /* ===== result ===== */

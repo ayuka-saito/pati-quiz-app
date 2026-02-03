@@ -24,14 +24,20 @@ body{
   padding:20px;
 }
 
-.game-title{
-  font-size: 2.2rem;
+/* メインタイトル */
+.game-title {
+  font-size: clamp(1.8rem, 6vw, 2.5rem);  /* 画面幅に応じて自動縮小 */
+  line-height: 1.2;
+  word-break: keep-all;   /* 単語の途中で改行させない */
   margin-bottom: 10px;
 }
 
-.subtitle{
+/* サブタイトル */
+.subtitle {
+  font-size: clamp(1rem, 4vw, 1.2rem);    /* 画面幅に応じて自動縮小 */
   opacity: 0.8;
   margin-bottom: 24px;
+  word-break: keep-all;
 }
 
 /* screens */
@@ -247,17 +253,20 @@ body.rainbow {
   animation: rainbowFlash 1s linear infinite;
 }
 
-#titleScreen{
+/* タイトル画面 */
+#titleScreen {
+  display: none; /* デフォルト非表示 */
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   min-height: 400px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-/* activeの時だけ表示＋flex */
-#titleScreen.active{
-  display: flex;
+#titleScreen.active {
+  display: flex; /* active のときだけ表示 */
 }
 
 .title-enter {
@@ -313,13 +322,14 @@ body.rainbow {
   <audio id="seStart" src="start.mp3"></audio>
   <audio id="seSelect" src="select.mp3"></audio>
 
-    <div id="titleScreen" class="screen active">
-  <h1 class="game-title title-enter">🎰パチスロクイズ🎰</h1>
-  <p class="subtitle subtitle-enter">知識とヒキで頂点を掴め❕</p>
-  <button class="action button-enter" onclick="goToGenre()">スタート</button>
-</div>
+  <!-- タイトル画面 -->
+  <div id="titleScreen" class="screen active">
+    <h1 class="game-title title-enter">🎰パチスロクイズ🎰</h1>
+    <p class="subtitle subtitle-enter">知識とヒキで頂点を掴め❕</p>
+    <button class="action button-enter" onclick="goToGenre()">スタート</button>
+  </div>
 
-  <!-- genre -->
+  <!-- ジャンル選択画面 -->
   <div id="genreScreen" class="screen">
     <h2>ジャンル選択</h2>
     <button class="genre-btn" onclick="startQuiz('html')">パチンコパチスロ用語</button>
@@ -524,6 +534,7 @@ const screens=document.querySelectorAll(".screen");
 const genreScreen=document.getElementById("genreScreen");
 const quizScreen=document.getElementById("quizScreen");
 const resultScreen=document.getElementById("resultScreen");
+const titleScreen = document.getElementById("titleScreen");
 
 const qEl=document.getElementById("question");
 const cEl=document.getElementById("choices");
@@ -538,29 +549,27 @@ const titleEl=document.getElementById("title");
 const resultText=document.getElementById("resultText");
 
 /* ===== util ===== */
+// スタートボタン押下時
 function goToGenre(){
-  // SE（あとで専用スタート音に変えてもOK）
   playSE("seStart");
+  if(navigator.vibrate){ navigator.vibrate(60); }
 
-  // 振動（Androidのみ）
-  if(navigator.vibrate){
-    navigator.vibrate(60);
-  }
+    // まずタイトル画面を即消す
+  titleScreen.classList.remove("active");
 
-  // フラッシュ演出
   document.body.classList.add("flash");
-
-  // 演出後に画面切り替え
-  setTimeout(()=>{
+  setTimeout(() => {
     document.body.classList.remove("flash");
-    show(genreScreen);
+    show(genreScreen); // タイトル画面消してジャンル表示
   }, 300);
 }
 
+// 画面切り替え
 function show(screen){
-  screens.forEach(s=>s.classList.remove("active"));
-  screen.classList.add("active");
+  screens.forEach(s => s.classList.remove("active")); // 全画面非表示
+  screen.classList.add("active");                     // 指定画面表示
 }
+
 
 function normalize(str){
   return str.trim().toLowerCase();

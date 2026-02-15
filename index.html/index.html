@@ -335,6 +335,8 @@ body.rainbow {
     <button class="genre-btn" onclick="startQuiz('html')">パチンコパチスロ用語</button>
     <button class="genre-btn" onclick="startQuiz('css')">パチスロ機種内容</button>
     <button class="genre-btn" onclick="startQuiz('js')">筐体クイズ</button>
+    <button class="genre-btn" onclick="startQuiz('effect')">上乗せフォントクイズ</button>
+
   </div>
 
   <!-- quiz -->
@@ -618,8 +620,102 @@ const QUIZ_DATA = {
 
 
     //ヴヴヴ
-  ]
+  ],
 
+    effect:[
+      
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["バンドリ","バンドリ！"],
+    img:"images/bandori_uwanose.jpg",
+    correctImg:"images/bandori.jpg",
+    wrongImg:"images/bandori.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["戦国乙女","戦国乙女4","戦国乙女４"],
+    img:"images/otome_uwanose.jpg",
+    correctImg:"images/otome.jpg",
+    wrongImg:"images/otome.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["ToLOVEる","トラブル","ToLOVEるダークネス","トラブルダークネス"],
+    img:"images/tora_uwanose.jpg",
+    correctImg:"images/tora.jpg",
+    wrongImg:"images/tora.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["シンフォギア","戦姫絶唱シンフォギア"],
+    img:"images/sinfo_uwanose.jpg",
+    correctImg:"images/sinfo.jpg",
+    wrongImg:"images/sinfo.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["コードギアス","コードギアス反逆のルルーシュ","ギアス"],
+    img:"images/giasu_uwanose.jpg",
+    correctImg:"images/giasu.jpg",
+    wrongImg:"images/giasu.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["東京喰種","喰種","グール"],
+    img:"images/gu-ru_uwanose.jpg",
+    correctImg:"images/gu-ru.jpg",
+    wrongImg:"images/gu-ru.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["鬼武者","新鬼武者","新鬼武者3","新鬼武者３"],
+    img:"images/oni_uwanose.jpg",
+    correctImg:"images/oni.jpg",
+    wrongImg:"images/oni.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["ゴッドイーター"],
+    img:"images/god_uwanose.jpg",
+    correctImg:"images/god.jpg",
+    wrongImg:"images/god.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["ヴァルヴレイヴ","ヴヴヴ","VVV","革命機ヴァルヴレイヴ"],
+    img:"images/vvv_uwanose.jpg",
+    correctImg:"images/VVV.jpg",
+    wrongImg:"images/VVV.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["DMC","dmc","デビルメイクライ","デビルメイクライ5","デビルメイクライ５"],
+    img:"images/dmc_uwanose.jpg",
+    correctImg:"images/dmc.jpg",
+    wrongImg:"images/dmc.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["かぐや","かぐや様は告らせたい"],
+    img:"images/kaguya_uwanose.jpg",
+    correctImg:"images/kaguya.jpg",
+    wrongImg:"images/kaguya.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["モンキー","モンキーターン","モンキーターンⅤ","モンキーターンV"],
+    img:"images/monki-_uwanose.jpg",
+    correctImg:"images/monki-.jpg",
+    wrongImg:"images/monki-.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["カバネリ","甲鉄城のカバネリ"],
+    img:"images/kaba_uwanose.jpg",
+    correctImg:"images/kaba.jpg",
+    wrongImg:"images/kaba.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["ユニコーン","機動戦士ガンダムユニコーン","ガンダムユニコーン","ユニコーンガンダム"],
+    img:"images/yuni_uwanose.jpg",
+    correctImg:"images/yuni.jpg",
+    wrongImg:"images/yuni.jpg"},
+
+    {type:"text",q:"画像の上乗せフォントは何の筐体？",
+    a:["リゼロ","Re:ゼロ","Re:ゼロから始める異世界生活","リゼロ2","リゼロ２","Re:ゼロ２","Re:ゼロ2",],
+    img:"images/rizero_uwanose.jpg",
+    correctImg:"images/rizero.jpg",
+    wrongImg:"images/rizero.jpg"},
+  
+
+  ],
 
 };
 
@@ -912,6 +1008,12 @@ submitBtn.onclick=()=>{
     feedbackEl.style.color="#dc2626";
 
     playSE("seWrong");
+
+    if(q.wrongImg){
+    const img=document.createElement("img");
+    img.src=q.wrongImg;
+    feedbackEl.appendChild(img);
+  }
       // ★ 不正解揺れ演出
   wrongEffect();
   }
